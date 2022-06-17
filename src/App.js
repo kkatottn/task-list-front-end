@@ -28,6 +28,7 @@ const App = () => {
   };
 
   const deleteTask = (id) => {
+    //console.log('is this working');
     const newTasks = tasks.filter((task) => task.id !== id);
     setTasks(newTasks);
   };
@@ -41,7 +42,7 @@ const App = () => {
         <div>
           {
             <TaskList
-              tasks={TASKS}
+              tasks={tasks}
               changeComplete={changeComplete}
               deleteTask={deleteTask}
             />
