@@ -3,6 +3,7 @@ import TaskList from './components/TaskList.js';
 import './App.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import NewTaskForm from './components/NewTaskForm.js';
 
 const TASKS = [
   {
@@ -20,7 +21,7 @@ const TASKS = [
 const App = () => {
   const [tasks, setTasks] = useState(TASKS);
 
-  useEffect(() => {
+  const fetchTasks = () => {
     axios
       .get('https://task-list-api-c17.herokuapp.com/tasks')
       .then((response) => {
@@ -30,24 +31,49 @@ const App = () => {
           })
         );
       });
+  };
+
+  useEffect(() => {
+    fetchTasks();
   }, []);
+
+  const onFormSubmit = (requestBody) => {
+    axios
+      .post('https://task-list-api-c17.herokuapp.com/tasks', requestBody)
+      .then(() => {
+        const nextId = Math.max(...tasks.map((task) => task.id)) + 1;
+        const newTasks = {
+          id: nextId,
+          title: requestBody.title,
+          description: requestBody.description,
+          isComplete: false,
+        };
+
+        setTasks({ ...tasks, newTasks });
+        fetchTasks();
+      });
+  };
 
   const changeComplete = (id) => {
     const tasksCopy = [...tasks];
     const obj = tasksCopy.find((task) => task.id === id);
+    let apiPromise;
 
     if (obj.isComplete) {
-      axios.patch(
+      apiPromise = axios.patch(
         `https://task-list-api-c17.herokuapp.com/tasks/${id}/mark_incomplete`
       );
     } else {
-      axios.patch(
+      apiPromise = axios.patch(
         `https://task-list-api-c17.herokuapp.com/tasks/${id}/mark_complete`
       );
     }
 
-    obj.isComplete = !obj.isComplete;
-    setTasks(tasksCopy);
+    apiPromise.then(() => {
+      obj.isComplete = !obj.isComplete;
+      setTasks(tasksCopy);
+      fetchTasks();
+    });
   };
 
   const deleteTask = (id) => {
@@ -71,6 +97,7 @@ const App = () => {
               deleteTask={deleteTask}
             />
           }
+          <NewTaskForm onFormSubmit={onFormSubmit} />
         </div>
       </main>
     </div>
