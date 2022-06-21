@@ -1,7 +1,8 @@
 import React from 'react';
 import TaskList from './components/TaskList.js';
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const TASKS = [
   {
@@ -19,16 +20,39 @@ const TASKS = [
 const App = () => {
   const [tasks, setTasks] = useState(TASKS);
 
+  useEffect(() => {
+    axios
+      .get('https://task-list-api-c17.herokuapp.com/tasks')
+      .then((response) => {
+        setTasks(
+          response.data.map((task) => {
+            return { ...task, isComplete: task.is_complete };
+          })
+        );
+      });
+  }, []);
+
   const changeComplete = (id) => {
     const tasksCopy = [...tasks];
     const obj = tasksCopy.find((task) => task.id === id);
-    obj.isComplete = !obj.isComplete;
 
+    if (obj.isComplete) {
+      axios.patch(
+        `https://task-list-api-c17.herokuapp.com/tasks/${id}/mark_incomplete`
+      );
+    } else {
+      axios.patch(
+        `https://task-list-api-c17.herokuapp.com/tasks/${id}/mark_complete`
+      );
+    }
+
+    obj.isComplete = !obj.isComplete;
     setTasks(tasksCopy);
   };
 
   const deleteTask = (id) => {
-    //console.log('is this working');
+    axios.delete(`https://task-list-api-c17.herokuapp.com/tasks/${id}`);
+
     const newTasks = tasks.filter((task) => task.id !== id);
     setTasks(newTasks);
   };
