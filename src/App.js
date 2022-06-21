@@ -42,14 +42,14 @@ const App = () => {
       .post('https://task-list-api-c17.herokuapp.com/tasks', requestBody)
       .then(() => {
         const nextId = Math.max(...tasks.map((task) => task.id)) + 1;
-        const newTasks = {
+        const newTask = {
           id: nextId,
           title: requestBody.title,
           description: requestBody.description,
           isComplete: false,
         };
 
-        setTasks({ ...tasks, newTasks });
+        setTasks([...tasks, newTask]);
         fetchTasks();
       });
   };
@@ -77,10 +77,13 @@ const App = () => {
   };
 
   const deleteTask = (id) => {
-    axios.delete(`https://task-list-api-c17.herokuapp.com/tasks/${id}`);
-
-    const newTasks = tasks.filter((task) => task.id !== id);
-    setTasks(newTasks);
+    axios
+      .delete(`https://task-list-api-c17.herokuapp.com/tasks/${id}`)
+      .then(() => {
+        const newTasks = tasks.filter((task) => task.id !== id);
+        setTasks(newTasks);
+        fetchTasks();
+      });
   };
 
   return (
