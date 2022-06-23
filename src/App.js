@@ -50,7 +50,7 @@ const App = () => {
         };
 
         setTasks([...tasks, newTask]);
-        fetchTasks();
+        //fetchTasks();
       });
   };
 
@@ -72,7 +72,7 @@ const App = () => {
     apiPromise.then(() => {
       obj.isComplete = !obj.isComplete;
       setTasks(tasksCopy);
-      fetchTasks();
+      //fetchTasks();
     });
   };
 
@@ -82,7 +82,7 @@ const App = () => {
       .then(() => {
         const newTasks = tasks.filter((task) => task.id !== id);
         setTasks(newTasks);
-        fetchTasks();
+        //fetchTasks();
       });
   };
 
