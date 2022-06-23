@@ -30,6 +30,9 @@ const App = () => {
             return { ...task, isComplete: task.is_complete };
           })
         );
+      })
+      .catch((e) => {
+        console.log("Couldn't fetch all tasks");
       });
   };
 
@@ -69,6 +72,8 @@ const App = () => {
       );
     }
 
+    apiPromise.catch((e) => console.log('Something wrong with set completion'));
+
     apiPromise.then(() => {
       obj.isComplete = !obj.isComplete;
       setTasks(tasksCopy);
@@ -83,6 +88,9 @@ const App = () => {
         const newTasks = tasks.filter((task) => task.id !== id);
         setTasks(newTasks);
         //fetchTasks();
+      })
+      .catch((e) => {
+        console.log("Couldn't delete the task!");
       });
   };
 

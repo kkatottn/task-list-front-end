@@ -5,12 +5,22 @@ import PropTypes from 'prop-types';
 const NewTaskForm = (props) => {
   const [formFields, setFormFields] = useState({ title: '', description: '' });
 
-  const onTitleChange = (event) => {
-    setFormFields({ ...formFields, title: event.target.value });
-  };
+  // const onTitleChange = (event) => {
+  //   setFormFields({ ...formFields, title: event.target.value });
+  // };
 
-  const onDescriptionChange = (event) => {
-    setFormFields({ ...formFields, description: event.target.value });
+  // const onDescriptionChange = (event) => {
+  //   setFormFields({ ...formFields, description: event.target.value });
+  // };
+
+  const handleChange = (event) => {
+    const element = event.target;
+    const name = element.name;
+    const value = element.value;
+
+    const newTaskData = { ...formFields };
+    newTaskData[name] = value;
+    setFormFields(newTaskData);
   };
 
   return (
@@ -27,7 +37,7 @@ const NewTaskForm = (props) => {
           type="text"
           name="title"
           value={formFields.title}
-          onChange={onTitleChange}
+          onChange={handleChange}
         />
       </div>
       <div>
@@ -36,7 +46,7 @@ const NewTaskForm = (props) => {
           type="text"
           name="description"
           value={formFields.description}
-          onChange={onDescriptionChange}
+          onChange={handleChange}
         />
       </div>
       <input type="submit" />
